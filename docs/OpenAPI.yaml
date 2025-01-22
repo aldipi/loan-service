@@ -1,0 +1,323 @@
+openapi: 3.0.0
+info:
+  title: Loan Service API
+  version: 1.0.0
+  description: API for managing loans and investments
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /loans/all:
+    get:
+      summary: Get all loans
+      parameters:
+        - name: limit
+          in: query
+          description: Number of loans to return
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Offset for pagination
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of loans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Loan'
+        '500':
+          description: Internal server error
+
+  /loans:
+    get:
+      summary: Get loans owned by borrower
+      parameters:
+        - name: X-User-Id
+          in: header
+          description: ID of the borrower
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Number of loans to return
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Offset for pagination
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of loans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Loan'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new loan
+      parameters:
+        - name: X-User-Id
+          in: header
+          description: ID of the user creating the loan
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                loanProductID:
+                  type: integer
+                amount:
+                  type: integer
+      responses:
+        '201':
+          description: Loan created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loan'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /loans/{id}/approval:
+    patch:
+      summary: Approve a loan by employee
+      parameters:
+        - name: id
+          in: path
+          description: ID of the loan to approve
+          required: true
+          schema:
+            type: integer
+        - name: X-User-Id
+          in: header
+          description: ID of the employee approving the loan
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                approvalProof:
+                  type: string
+      responses:
+        '200':
+          description: Loan approved
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /loans/{id}/disbursement:
+    patch:
+      summary: Disburse a loan by employee
+      parameters:
+        - name: id
+          in: path
+          description: ID of the loan to disburse
+          required: true
+          schema:
+            type: integer
+        - name: X-User-Id
+          in: header
+          description: ID of the employee disbursing the loan
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                agreementLetter:
+                  type: string
+      responses:
+        '200':
+          description: Loan disbursed
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /loans/{id}/availability:
+    get:
+      summary: Get available amount to invest to a loan
+      parameters:
+        - name: id
+          in: path
+          description: ID of the loan to check availability
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Available amount
+          content:
+            application/json:
+              schema:
+                type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /investments:
+    get:
+      summary: Get investments owned by investor
+      parameters:
+        - name: X-User-Id
+          in: header
+          description: ID of the investor
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Number of investments to return
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Offset for pagination
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of investments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Investment'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new investment by investor
+      parameters:
+        - name: X-User-Id
+          in: header
+          description: ID of the investor creating the investment
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                loan_id:
+                  type: integer
+                amount:
+                  type: integer
+      responses:
+        '201':
+          description: Investment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Investment'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Loan:
+      type: object
+      properties:
+        id:
+          type: integer
+        state:
+          type: integer
+        borrower_id:
+          type: integer
+        principal_amount:
+          type: integer
+        rate:
+          type: number
+          format: float
+        roi:
+          type: number
+          format: float
+        approval_proof:
+          type: string
+        approved_by:
+          type: integer
+        agreement_letter:
+          type: string
+        disbursed_by:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        approved_at:
+          type: string
+          format: date-time
+        invested_at:
+          type: string
+          format: date-time
+        disbursed_at:
+          type: string
+          format: date-time
+        last_updated_at:
+          type: string
+          format: date-time
+
+    Investment:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: integer
+        investor_id:
+          type: integer
+        loan_id:
+          type: integer
+        agreement_letter:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        last_updated_at:
+          type: string
+          format: date-time

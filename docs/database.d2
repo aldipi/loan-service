@@ -1,0 +1,69 @@
+loans: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    state: smallint
+    borrower_id: int
+    principal_amount: int
+    rate: decimal
+    roi: decimal
+    approval_proof: string
+    approved_by: int
+    agreement_letter: string
+    disbursed_by: int
+    created_at: timestamp
+    approved_at: timestamp
+    invested_at: timestamp
+    disbursed_at: timestamp
+    last_updated_at: timestamp
+}
+
+loan_products: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    name: string
+    rate: decimal
+    roi: decimal
+    created_at: timestamp
+    last_updated_at: timestamp
+}
+
+employees: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    name: string
+    created_at: timestamp
+    last_updated_at: timestamp
+}
+
+users: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    name: string
+    created_at: timestamp
+    last_updated_at: timestamp
+}
+
+investors: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    name: string
+    created_at: timestamp
+    last_updated_at: timestamp
+}
+
+investments: {
+    shape: sql_table
+    id: int {constraint: primary_key}
+    amount: int
+    investor_id: int
+    loan_id: int
+    agreement_letter: string
+    created_at: timestamp
+    last_updated_at: timestamp
+}
+
+loans.borrower_id -> users.id
+loans.approved_by -> employees.id
+
+investments.investor_id -> investors.id
+investments.loan_id -> loans.id

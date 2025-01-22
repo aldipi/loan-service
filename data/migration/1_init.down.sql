@@ -1,0 +1,10 @@
+DROP INDEX IF EXISTS idx_borrower_id;
+DROP INDEX IF EXISTS idx_investor_id;
+DROP INDEX IF EXISTS idx_loan_id;
+
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS investors;
+DROP TABLE IF EXISTS loans;
+DROP TABLE IF EXISTS investments;
+DROP TABLE IF EXISTS loan_products;
