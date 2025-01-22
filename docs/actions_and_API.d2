@@ -1,0 +1,16 @@
+direction: right
+
+user.shape: person
+employee.shape: person
+
+user -> loan: submit new loan proposal\nPOST /loans
+user -> loan: check their loans\nGET /loans
+
+employee -> loan: get all loans to process\nGET /loans/all
+employee -> loan: approve loan\nPOST /loans/:id/approval
+employee -> loan: disburse loan\nPOST /loans/:id/disbursement
+
+investor -> loan: get all loans to invest\nGET /loans/all
+investor -> loan: check avaiable amount to invest\nGET /loans/:id/availability
+investor -> loan: make investment\nPOST /investments
+investor -> loan: get all their investments\nGET /investments
