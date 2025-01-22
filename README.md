@@ -59,3 +59,24 @@ API blueprint can be found on [/docs/OpenAPI.yaml](/docs/OpenAPI.yaml).
 Diagram documentations can be found on [/docs](/docs/). All diagram are written in D2 Documentation format. You can use [D2 Playground](https://play.d2lang.com/) to view the diagram.
 
 More info on [D2Lang](https://d2lang.com/).
+
+## How to Run
+
+#### Prerequisite
+* Go version >= 1.22
+* MySQL version >= 8.4
+
+#### Step by step
+1. Set database connection on `.env` file
+> Note: please keep `parseTime=true` to allow conversion of MySQL `TIMESTAMP` to Go `time.Time`
+2. Create database schema for Loan Service by executing this on SQL console
+```
+CREATE DATABASE loan_service;
+```
+3. Execute DB migration to initialize tables by running [1_init.up.sql](data/migration/1_init.up.sql) in SQL console. Ideally this can be run by schema migration, but we can also run it in SQL console.
+4. Execute DB seed to populate some data by running [data_seeds.sql](data/data_seeds.sql) in SQL console.
+5. Run Loan Service API server
+```
+go run cmd/main.go
+```
+
